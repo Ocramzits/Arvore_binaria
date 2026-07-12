@@ -70,7 +70,7 @@ No* inserirIterativo(No* raiz, int valor) {
     return raiz;
 }
 
-// FUNÇÕES DE IMPRESSÃO
+// FUNÇÃO DE IMPRESSÃO
 // Em-Ordem: Esquerda -> Raiz -> Direita (Imprime os números ordenados)
 void exibirEmOrdem(No* raiz) {
     if (raiz != NULL) {
