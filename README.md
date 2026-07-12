@@ -25,14 +25,6 @@ gcc arvore_binaria.c -o arvore_binaria
 
 Saída esperada: os valores inseridos (`50, 30, 70, 20, 40`) impressos em ordem crescente, seguidos do processo de remoção de cada nó durante a limpeza da árvore.
 
-## Possíveis extensões
-
-Caso o projeto evolua, pontos naturais para adicionar:
-- Busca de um valor na árvore (`buscar`)
-- Remoção de um nó específico (mais complexa: precisa tratar os 3 casos — folha, um filho, dois filhos)
-- Cálculo de altura ou balanceamento da árvore
-- Percursos pré-ordem e pós-ordem para exibição
-
 ## Autor
 
 Marco Antônio — Sistemas de Informação, UFPI.
