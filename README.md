@@ -1,42 +1,37 @@
-# Simulação de Estacionamento com Threads
+# Árvore Binária de Busca (BST) em C
 
-Simulação em C de um estacionamento com vagas limitadas, onde múltiplos carros disputam acesso concorrente usando **threads POSIX** e **semáforos**, feita para a disciplina de **Sistemas Operacionais**.
+Implementação de uma **Árvore Binária de Busca** em C, com inserção feita das duas formas possíveis — recursiva e iterativa —, percurso em ordem e liberação correta da memória alocada.
 
 ## Sobre o projeto
 
-O programa cria **15 carros** (threads), cada um tentando entrar em um estacionamento com apenas **4 vagas**. Cada carro espera um tempo aleatório antes de tentar entrar, ocupa uma vaga por um tempo aleatório e depois sai, liberando a vaga para o próximo carro na fila.
-
-O objetivo é demonstrar, na prática, como um **semáforo contador** resolve um problema clássico de concorrência: garantir que nunca mais threads acessem um recurso do que a capacidade permitida, sem uso de locks manuais.
+O programa monta uma árvore binária de busca inserindo alguns valores, exibe o resultado em ordem crescente e depois desaloca toda a estrutura, demonstrando o ciclo completo de vida da árvore: criação, inserção, percurso e limpeza.
 
 ## Conceitos aplicados
 
-- **Threads POSIX (`pthread`)**: cada carro é executado como uma thread independente (`pthread_create`), simulando concorrência real
-- **Semáforo contador (`sem_t`)**: inicializado com o número de vagas (`sem_init(&vagas, 0, VAGAS)`), controla quantos carros podem estar estacionados ao mesmo tempo
-- **Seção crítica**: `sem_wait`/`sem_post` delimitam a entrada e saída do recurso compartilhado (a vaga), evitando que mais de `VAGAS` carros ocupem o estacionamento simultaneamente
-- **Sincronização com `pthread_join`**: a thread principal aguarda todos os carros terminarem antes de oferecer uma nova rodada de simulação
-- **Condição de corrida evitada por design**: mesmo com múltiplas threads lendo/alterando o estado do semáforo concorrentemente, o acesso é seguro porque toda a exclusão passa pelas primitivas do semáforo, não por variáveis compartilhadas sem proteção
-- **Aleatoriedade thread-safe**: uso de `rand_r` com seed própria por thread (em vez de `rand`), evitando condição de corrida no gerador de números aleatórios
-- **Validação de entrada do usuário** em loop (`validar`), tratando caracteres inválidos na leitura com `scanf`
+- **Alocação dinâmica de memória**: cada nó é criado com `malloc`, com verificação de falha na alocação (`if (novoNo == NULL)`)
+- **Ponteiros e structs recursivas**: `No` se referencia a si mesmo através dos ponteiros `esquerda` e `direita`, formando a estrutura da árvore
+- **Recursão**: `inserirRecursivo` desce a árvore chamando a si mesma até encontrar a posição vazia (`NULL`), que é o caso base
+- **Iteração como alternativa à recursão**: `inserirIterativo` resolve o mesmo problema com um laço `while`, guardando manualmente o ponteiro `pai` para conectar o novo nó — útil para comparar as duas abordagens e discutir o custo de pilha de chamadas
+- **Propriedade da BST**: valores menores que o nó vão para a esquerda, maiores vão para a direita, e valores repetidos são ignorados (na versão iterativa)
+- **Percurso em-ordem (in-order traversal)**: visita esquerda → raiz → direita, o que naturalmente imprime os valores em ordem crescente — propriedade clássica de BSTs
+- **Liberação de memória (`free`) em pós-ordem**: `limparArvore` desce até as folhas antes de liberar cada nó (esquerda → direita → nó atual), evitando acessar memória já liberada
 
 ## Como compilar e executar
 
-Requer um compilador C com suporte a `pthread` (padrão em Linux/gcc).
-
 ```bash
-gcc estacionamento.c -o estacionamento -lpthread
-./estacionamento
+gcc arvore_binaria.c -o arvore_binaria
+./arvore_binaria
 ```
 
-Ao rodar, o programa pergunta se deseja iniciar a simulação (`S`/`N`). Cada execução dispara os 15 carros simultaneamente e mostra em tempo real quem está entrando, esperando ou saindo, além da ocupação atual das vagas. Ao final de cada rodada, é possível simular novamente sem reiniciar o programa.
+Saída esperada: os valores inseridos (`50, 30, 70, 20, 40`) impressos em ordem crescente, seguidos do processo de remoção de cada nó durante a limpeza da árvore.
 
-## Parâmetros ajustáveis
+## Possíveis extensões
 
-No topo do arquivo:
-
-```c
-#define TOTAL_CARROS 15   // quantidade de carros simulados
-#define VAGAS 4           // capacidade do estacionamento
-```
+Caso o projeto evolua, pontos naturais para adicionar:
+- Busca de um valor na árvore (`buscar`)
+- Remoção de um nó específico (mais complexa: precisa tratar os 3 casos — folha, um filho, dois filhos)
+- Cálculo de altura ou balanceamento da árvore
+- Percursos pré-ordem e pós-ordem para exibição
 
 ## Autor
 
